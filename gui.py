@@ -38,6 +38,20 @@ class SortWindow(Gtk.Window):
 		self.barWidthSBtn.set_increments(1, -1)
 		self.barWidthSBtn.set_tooltip_text("Bar width in pixels")
 		
+		self.algsStore = Gtk.ListStore(str)
+		self.algsStore.append(["Bubblesort"])
+		self.algsStore.append(["Quicksort"])
+		self.algsStore.append(["Bogosort"])
+		self.algsStore.append(["Insertion sort"])
+		self.algsStore.append(["Counting sort"])
+		self.algsStore.append(["Radix sort (insertion sort subroutine)"])
+		self.algsStore.append(["Radix sort (bubblesort subroutine)"])
+		self.algsCombo = Gtk.ComboBox.new_with_model(self.algsStore)
+		self.algsRenderer = Gtk.CellRendererText()
+		self.algsCombo.pack_start(self.algsRenderer, True)
+		self.algsCombo.add_attribute(self.algsRenderer, "text", 0)
+		
+		self.headerbar.pack_end(self.algsCombo)
 		self.headerbar.pack_start(self.startButton)
 		self.headerbar.pack_start(self.refrButton)
 		self.headerbar.pack_end(self.barWidthSBtn)
@@ -49,6 +63,15 @@ class SortWindow(Gtk.Window):
 		global barWidth
 		barWidth = self.barWidthSBtn.get_value_as_int()
 		listToSort = generate_list(self.get_size()[1], round(self.get_size()[0] / (barWidth + 1)))
+		self.algsSwitcher = {
+			0: [bubblesort, (listToSort, refrRate, 0)],
+			1: [quicksort, (listToSort, 0, len(listToSort) - 1, refrRate)],
+			2: [bogosort, (listToSort, refrRate)],
+			3: [insertionsort, (listToSort, refrRate)],
+			4: [countingsort, (listToSort, refrRate, 0)],
+			5: [radixsort, (listToSort, refrRate, countingsort)],
+			6: [radixsort, (listToSort, refrRate, bubblesort)],
+		}
 	
 	def on_draw(self, widget, cairoContext):
 		cairoContext.set_source_rgb(0.6, 0.6, 0.6)
@@ -62,9 +85,8 @@ class SortWindow(Gtk.Window):
 		return True
 
 	def start_on_click(self, widget):
-		sortingThread = threading.Thread(target=quicksort, args=(listToSort, 0, len(listToSort) - 1, refrRate), daemon = True)
-		#sortingThread = threading.Thread(target=bubblesort, args=(listToSort, refrRate), daemon = True)
-		#sortingThread = threading.Thread(target=bogosort, args=(listToSort, refrRate), daemon = True)
+		self.alg = self.algsSwitcher.get(self.algsCombo.get_active())
+		sortingThread = threading.Thread(target=self.alg[0], args=self.alg[1], daemon = True)
 		sortingThread.start()
 		timeoutId = GLib.timeout_add(1 / refrRate * 1000, self.on_timeout, None)
 		

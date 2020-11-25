@@ -9,6 +9,10 @@ A GTK sorting visualiser
 * gobject-introspection
 ### Linux
 All of the above should be already built into most Linux distros. If not, PyGObject is often packaged as `python3-gobject`, `python3-gi`, `pygobject` or as a dependency for `gobject-introspection`.
+### macOS
+Requires [Homebrew](https://brew.sh).
+
+`brew install gtk+3 pygobject3`
 ### FreeBSD
 `pkg install python gtk3 gobject-introspection`
 ### OpenBSD
@@ -19,5 +23,12 @@ All of the above should be already built into most Linux distros. If not, PyGObj
 or
 `python3 main.py`
 
-## Note
-Right now, you have to uncomment line 65, 66 or 67 in gui.py in order to change the visualised algorithm.
+## Notes
+### Quicksort
+Under certain conditions, quicksort swaps two identical elements. If this happens too often, the visualisation seemingly stops. Quicksort has a “fast mode”, which makes it skip the time.sleep() instructions and thus gets rid of the issue.
+### Counting sort and radix sort with counting sort as its subroutine
+The two are not comparison sorting algorithms, so they're intended to work on a new list rather than the original. This means that:
+* I had to come up with a workaround to make the visualisation work (creating a copy instead of an empty list)
+* they look much different than other algorithms
+* they attempt to work even if the list is already sorted
+* if you stop them midway through, the list will differ from the original not only order-wise, but also content-wise.

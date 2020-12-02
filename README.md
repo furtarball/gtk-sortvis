@@ -25,7 +25,7 @@ or
 
 ## Notes
 ### Quicksort
-Under certain conditions, quicksort swaps two identical elements. If this happens too often, the visualisation seemingly stops. Quicksort has a “fast mode”, which makes it skip the time.sleep() instructions and thus gets rid of the issue.
+Quicksort only compares elements to the pivot it chose, not to one another, so it sometimes swaps two identical elements. If this happens too often, the visualisation seemingly stops. This program has a “quicksort fast mode”, which makes it skip the time.sleep() instructions and thus gets rid of the issue. That also takes place if the list is already sorted, which is why the counter still goes up if the user clicks Start.
 ### Counting sort and radix sort with counting sort as its subroutine
 The two are not comparison sorting algorithms, so they're intended to work on a new list rather than the original. This means that:
 * I had to come up with a workaround to make the visualisation work (creating a copy instead of an empty list)

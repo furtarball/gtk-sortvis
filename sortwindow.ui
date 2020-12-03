@@ -1,0 +1,193 @@
+<interface>
+	<object class="GtkApplicationWindow" id="sortWindow">
+		<property name="default-width">600</property>
+		<property name="default-height">400</property>
+		<property name="icon-name">view-sort-ascending</property>
+		
+			<child type="titlebar">
+				<object class="GtkHeaderBar">
+					<property name="title">GTK Sorting Visualiser</property>
+					<property name="show-close-button">True</property>
+					
+					<child>
+						<object class="GtkButton" id="startBtn">
+						<property name="tooltip-text">Start sorting</property>
+						<signal name="clicked" handler="onStartClick" />
+						<child>
+							<object class="GtkImage">
+								<property name="icon-name">media-playback-start-symbolic</property>
+							</object>
+						</child>
+						</object>
+					</child>
+					<child>
+						<object class="GtkButton" id="refrBtn">
+							<property name="tooltip-text">Reshuffle &amp; redraw bars</property>
+							<signal name="clicked" handler="onRefrClick" />
+							<child>
+							<object class="GtkImage">
+								<property name="icon-name">view-refresh-symbolic</property>
+							</object>
+						</child>
+						</object>
+					</child>
+					<child>
+						<object class="GtkComboBoxText" id="algsCombo">
+							<property name="active">0</property>
+							<property name="tooltip-text">Sorting algorithm</property>
+							<signal name="changed" handler="onAlgSwitch" />
+							<items>
+								<item>Bubble sort</item>
+								<item>Counting sort</item>
+								<item>Insertion sort</item>
+								<item>Radix sort</item>
+								<item>Quicksort</item>
+								<item>Bogosort</item>
+							</items>
+						</object>
+						<packing><property name="pack-type">end</property></packing>
+					</child>
+					
+				</object>
+			</child>
+		
+			<child>
+				<object class="GtkBox">
+					<property name="orientation">vertical</property>
+				
+					<child>
+						<object class="GtkGrid">
+						<property name="column-homogeneous">True</property>
+						
+						<!-- Row 0 -->
+							<child>
+								<object class="GtkLabel">
+									<property name="label">Bar width (px):</property>
+								</object>
+								<packing>
+									<property name="left-attach">0</property>
+									<property name="top-attach">0</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkSpinButton" id="barWidthSBtn">
+									<signal name="value-changed" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">1</property>
+									<property name="top-attach">0</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkToggleButton" id="gapsToggle">
+									<property name="label">Gaps</property>
+									<property name="active">True</property>
+									<signal name="toggled" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">2</property>
+									<property name="top-attach">0</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkToggleButton" id="fillToggle">
+									<property name="label">Fill</property>
+									<property name="active">True</property>
+									<signal name="toggled" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">3</property>
+									<property name="top-attach">0</property>
+								</packing>
+							</child>
+							
+						<!-- Row 1 -->
+							<child>
+								<object class="GtkLabel">
+									<property name="label">1 / Speed (ms):</property>
+								</object>
+								<packing>
+									<property name="left-attach">0</property>
+									<property name="top-attach">1</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkSpinButton" id="speedSBtn">
+									<property name="tooltip-text">Reciprocal of delay between every write to list</property>
+									<signal name="value-changed" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">1</property>
+									<property name="top-attach">1</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkToggleButton" id="barOrderToggle">
+									<property name="label">Bars: shuffled</property>
+									<property name="tooltip-text">Initial order of bars; takes effect upon reshuffle</property>
+									<signal name="toggled" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">2</property>
+									<property name="top-attach">1</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkCheckButton" id="qsFastToggle">
+									<property name="label">Fast QS</property>
+									<signal name="toggled" handler="onToggle" />
+								</object>
+								<packing>
+									<property name="left-attach">3</property>
+									<property name="top-attach">1</property>
+								</packing>
+							</child>
+							<child>
+								<object class="GtkToggleButton" id="rsSubrtToggle">
+									<property name="label">Subroutine: CS</property>
+									<property name="tooltip-text">Counting sort / Bubble sort</property>
+									<signal name="toggled" handler="onAlgSwitch" />
+								</object>
+								<packing>
+									<property name="left-attach">3</property>
+									<property name="top-attach">1</property>
+								</packing>
+							</child>
+						
+						</object>
+					</child>
+					
+					<child>
+						<object class="GtkDrawingArea" id="mainDArea">
+							<signal name="draw" handler="onDraw" />
+						</object>
+						<packing>
+							<property name="expand">True</property>
+							<property name="fill">True</property>
+							<property name="position">1</property>
+						</packing>
+					</child>
+					
+					<child>
+						<object class="GtkBox">
+							<property name="orientation">horizontal</property>
+							<property name="homogeneous">True</property>
+							
+							<child>
+								<object class="GtkLabel" id="barCountLbl">
+									<property name="label">Bars on screen: 0</property>
+								</object>
+							</child>
+							<child>
+								<object class="GtkLabel" id="changesMadeLbl">
+									<property name="label">Changes made to list: 0</property>
+								</object>
+							</child>
+						</object>
+					</child>
+					
+				</object>
+			</child>
+		
+	</object>
+</interface>

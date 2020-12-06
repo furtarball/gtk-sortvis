@@ -16,15 +16,18 @@ def nth_digit(x, n):
 		return x
 	else:
 		return x // 10 ** (n - 1) % 10
+		
+def swap(a, b, lst, addl):
+	(lst[a], lst[b]) = (lst[b], lst[a])
+	addl[1] += 2
+	time.sleep(addl[0] ** -1)
 
 def bubblesort(numbers, addtl):
 	end = len(numbers) - 1
 	while end > 0:
 		for i in range(end):
 			if nth_digit(numbers[i], addtl[4]) > nth_digit(numbers[i+1], addtl[4]):
-				(numbers[i], numbers[i+1]) = (numbers[i+1], numbers[i])
-				time.sleep(addtl[0] ** -1)
-				addtl[1] += 2
+				swap(i, i + 1, numbers, addtl)
 			if addtl[2].is_set():
 				if addtl[3]:
 					addtl[1] = 0
@@ -35,26 +38,22 @@ def quicksort_partition(numbers, low, high, addtl):
 	# median of three: an optimisation for already sorted lists;
 	# without it, python would throw a recursion error under certain conditions
 	mid = math.floor((low + high) / 2)
-	if numbers[mid] < numbers[low]:
-		(numbers[low], numbers[mid]) = (numbers[mid], numbers[low])
-	if numbers[high] < numbers[low]:
-		(numbers[low], numbers[high]) = (numbers[high], numbers[low])
-	if numbers[mid] < numbers[high]:
-		(numbers[mid], numbers[high]) = (numbers[high], numbers[mid])
+	if numbers[low] > numbers[mid]:
+		swap(low, mid, numbers, addtl)
+	if numbers[mid] > numbers[high]:
+		swap(high, mid, numbers, addtl)
+	if numbers[low] > numbers[mid]:
+		swap(low, mid, numbers, addtl)
 	i = low - 1
 	for j in range(low, high):
 		if numbers[j] <= numbers[high]:
 			i += 1
-			(numbers[i], numbers[j]) = (numbers[j], numbers[i])
-			time.sleep(addtl[0] ** -1)
-			addtl[1] += 2
+			swap(i, j, numbers, addtl)
 		if addtl[2].is_set():
 			if addtl[3]:
 				addtl[1] = 0
 			break
-	(numbers[high], numbers[i + 1]) = (numbers[i + 1], numbers[high])
-	time.sleep(addtl[0] ** -1)
-	addtl[1] += 2
+	swap(high, i + 1, numbers, addtl)
 	return i + 1
 
 def quicksort(numbers, addtl, low, high):
@@ -62,10 +61,10 @@ def quicksort(numbers, addtl, low, high):
 		if addtl[3]:
 			addtl[1] = 0
 		return
-	if low < high: # if there's more than one item in the (sub)list
-		pivot = quicksort_partition(numbers, low, high, addtl) #quicksort_partition() returns the pivot
-		quicksort(numbers, addtl, low, pivot - 1) #for sublist left of the pivot
-		quicksort(numbers, addtl, pivot + 1, high) #for sublist right of the pivot
+	if low < high:
+		pivot = quicksort_partition(numbers, low, high, addtl)
+		quicksort(numbers, addtl, low, pivot - 1)
+		quicksort(numbers, addtl, pivot + 1, high)
 
 def bogosort(numbers, addtl):
 	while not all(numbers[i+1] >= numbers[i] for i in range(len(numbers) - 1)):
@@ -81,9 +80,7 @@ def insertionsort(numbers, addtl):
 		for i in range(len(numbers)):
 			for j in range(i + 1, len(numbers)):
 				if numbers[i] > numbers[j]:
-					(numbers[i], numbers[j]) = (numbers[j], numbers[i])
-					time.sleep(addtl[0] ** -1)
-					addtl[1] += 2
+					swap(i, j, numbers, addtl)
 				if addtl[2].is_set():
 					if addtl[3]:
 						addtl[1] = 0

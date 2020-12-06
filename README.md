@@ -1,5 +1,5 @@
 # gtk-sortvis
-A GTK sorting visualiser
+A sorting algorithm visualiser written in GTK. This program animates several sorting algorithms by showing the way they work on vertical bars.
 
 ![Screenshot](screenshot.png)
 
@@ -7,31 +7,35 @@ A GTK sorting visualiser
 * Python 3
 * GTK3
 * gobject-introspection
+* Adwaita icon theme
+
 ### Linux
 All of the above should be already built into most Linux distros. If not, PyGObject is often packaged as `python3-gobject`, `python3-gi`, `pygobject` or as a dependency for `gobject-introspection`.
+
 ### macOS
 Requires [Homebrew](https://brew.sh).
 
-`brew install gtk+3 pygobject3`
+`brew install gtk+3 pygobject3 adwaita-icon-theme`
+
 ### FreeBSD
 `pkg install python gtk3 gobject-introspection`
+
 ### OpenBSD
 `pkg_add python py-gobject3 gtk+3`
 
 ## Running
-`python main.py`
-or
-`python3 main.py`
+`./main.py`
+
+## The interface
+Most of the GUI elements have a tooltip.
+
+After clicking the *start button* in the upper left corner, sorting begins. The *refresh button* stops it and reshuffles the bars. The *dropdown list* in the upper right corner lets you choose the algorithm and stops the sorting. In case radix sort is chosen, a toggle appears below, giving the user an option to pick the subroutine used by the algorithm – counting sort or bubble sort. Clicking said button also stops the sorting.
+
+Options directly below the title bar determine the appearance of the bars.
+
+The *speed spinner* controls the delay between each change made to the list being sorted. The bigger the value is, the shorter the delay is, thus making the operation run quicker. The *bar order toggle* determines the initial order of the bars – it may be random or sorted in descending order. It only takes effect if no sorting operation is in effect at the time or if the refresh button is clicked.
 
 ## Notes
-### Quicksort
-Quicksort only compares elements to the pivot it chose, not to one another, so it sometimes swaps two identical elements. If this happens too often, the visualisation seemingly stops. This program has a “quicksort fast mode”, which makes it skip the time.sleep() instructions and thus gets rid of the issue.
-
-Quicksort also works on already sorted lists.
 
 ### Counting sort and radix sort with counting sort as its subroutine
-The two are not comparison sorting algorithms, so they're intended to work on a new list rather than the original. This means that:
-* I had to come up with a workaround to make the visualisation work (creating a copy instead of an empty list)
-* they look much different than other algorithms
-* they attempt to work even if the list is already sorted
-* if you stop them midway through, the list will differ from the original not only order-wise, but also content-wise.
+The two are not comparison sorting algorithms, so they're intended to work on a new, empty list rather than the original. This means they attempt to work even if the list is already sorted. If you stop them midway through, the list will differ from the original content-wise.

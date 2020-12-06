@@ -3,7 +3,6 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from algorithms import *
 import threading
-import time
 
 algsSwitcher = {
 	0: bubblesort,
@@ -15,9 +14,10 @@ algsSwitcher = {
 }
 
 listToSort = []
-# 0. speed, 1. change count, 2. thread stopping event, 3. are you refrBtn?,
-# 4. digit for bubble and countingsort single-digit mode (used for radixsort, 0 = off),
-# 5. radix sort subroutine, 6. bar order (True = descending, False = random)
+# 0. speed, 1. change count, 2. thread stopping event, 3. who's setting the event?
+# (True = refrBtn, False = algsCombo), 4. digit for bubble and countingsort single-digit
+# mode (used for radixsort, 0 = off) 5. radix sort subroutine, 6. bar order
+# (True = descending, False = random)
 addl = [60, 0, threading.Event(), False, 0, countingsort, False]
 sortingThread = threading.Thread()
 
@@ -28,9 +28,9 @@ class Application(Gtk.Application):
 			"onStartClick": self.start_on_click,
 			"onRefrClick": self.refr_on_click,
 			"onAlgSwitch": self.algs_on_change,
+			"onConfigure": self.on_configure, # on window size change
 			"onDraw": self.on_draw,
-			"onToggle": self.on_setting_change,
-			"onConfigure": self.on_configure
+			"onToggle": self.on_setting_change
 		}
 		self.builder = Gtk.Builder.new_from_file("sortwindow.ui")
 		
@@ -69,8 +69,15 @@ class Application(Gtk.Application):
 		self.prevSize = [self.mainDArea.get_allocation().width, self.mainDArea.get_allocation().height]
 		self.mainDArea.queue_draw()
 		
+	def on_configure(self, widget, event):
+		wdiff = abs(self.mainDArea.get_allocation().width - self.prevSize[0])
+		hdiff = abs(self.mainDArea.get_allocation().height - self.prevSize[1])
+		margin = self.barWidthSBtn.get_value() + self.gapsToggle.get_active()
+		if ((wdiff >= margin) or (hdiff >= margin)) and not sortingThread.is_alive():
+			self.generate_heights()
+		
 	def on_draw(self, widget, cairoContext):
-		nf = (not self.fillToggle.get_active()) # to make that line shorter
+		nf = (not self.fillToggle.get_active())
 		bw = self.barWidthSBtn.get_value()
 		baseMargin = self.mainDArea.get_allocation().width / 2 - (len(listToSort) * (bw + self.gapsToggle.get_active())) / 2
 		cairoContext.set_source_rgb(0.6, 0.6, 0.6)
@@ -91,12 +98,13 @@ class Application(Gtk.Application):
 		arguments = (listToSort, addl)
 		if choice == quicksort:
 			arguments += (0, len(listToSort) - 1)
-		addl[4] = 0
-		addl[2].clear()
 		global sortingThread
-		sortingThread = threading.Thread(target = choice, args = arguments, daemon = True)
-		sortingThread.start()
-		self.window.add_tick_callback(self.on_tick, sortingThread)
+		if not sortingThread.is_alive():
+			addl[4] = 0
+			addl[2].clear()
+			sortingThread = threading.Thread(target = choice, args = arguments, daemon = True)
+			sortingThread.start()
+			self.window.add_tick_callback(self.on_tick, sortingThread)
 		
 	def refr_on_click(self, widget):
 		addl[3] = True
@@ -109,7 +117,6 @@ class Application(Gtk.Application):
 		addl[3] = False
 		addl[2].set()
 		if widget == self.algsCombo:
-			# hide/show special options
 			if widget.get_active() == 3:
 				self.rsSubrtToggle.show()
 			else:
@@ -137,11 +144,4 @@ class Application(Gtk.Application):
 		else:
 			self.fillToggle.set_sensitive(True)
 		if (widget == self.barWidthSBtn or widget == self.gapsToggle or widget == self.barOrderToggle) and not sortingThread.is_alive():
-			self.generate_heights()
-	
-	def on_configure(self, widget, event):
-		wdiff = abs(self.mainDArea.get_allocation().width - self.prevSize[0])
-		hdiff = abs(self.mainDArea.get_allocation().height - self.prevSize[1])
-		margin = self.barWidthSBtn.get_value() + self.gapsToggle.get_active()
-		if ((wdiff >= margin) or (hdiff >= margin)) and not sortingThread.is_alive():
 			self.generate_heights()

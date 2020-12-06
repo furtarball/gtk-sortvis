@@ -133,16 +133,6 @@
 								</packing>
 							</child>
 							<child>
-								<object class="GtkCheckButton" id="qsFastToggle">
-									<property name="label">Fast QS</property>
-									<signal name="toggled" handler="onToggle" />
-								</object>
-								<packing>
-									<property name="left-attach">3</property>
-									<property name="top-attach">1</property>
-								</packing>
-							</child>
-							<child>
 								<object class="GtkToggleButton" id="rsSubrtToggle">
 									<property name="label">Subroutine: CS</property>
 									<property name="tooltip-text">Counting sort / Bubble sort</property>
@@ -160,6 +150,7 @@
 					<child>
 						<object class="GtkDrawingArea" id="mainDArea">
 							<signal name="draw" handler="onDraw" />
+							<signal name="configure-event" handler="onConfigure" />
 						</object>
 						<packing>
 							<property name="expand">True</property>

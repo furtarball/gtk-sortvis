@@ -1,5 +1,6 @@
 import time
 import random
+import math
 from collections import Counter
 
 def generate_list(maximum, itemsNo, order):
@@ -25,22 +26,31 @@ def bubblesort(numbers, addtl):
 				time.sleep(addtl[0] ** -1)
 				addtl[1] += 2
 			if addtl[2].is_set():
-				addtl[1] = 0
+				if addtl[3]:
+					addtl[1] = 0
 				return
 		end -= 1
 
 def quicksort_partition(numbers, low, high, addtl):
+	# median of three: an optimisation for already sorted lists;
+	# without it, python would throw a recursion error under certain conditions
+	mid = math.floor((low + high) / 2)
+	if numbers[mid] < numbers[low]:
+		(numbers[low], numbers[mid]) = (numbers[mid], numbers[low])
+	if numbers[high] < numbers[low]:
+		(numbers[low], numbers[high]) = (numbers[high], numbers[low])
+	if numbers[mid] < numbers[high]:
+		(numbers[mid], numbers[high]) = (numbers[high], numbers[mid])
 	i = low - 1
 	for j in range(low, high):
 		if numbers[j] <= numbers[high]:
 			i += 1
 			(numbers[i], numbers[j]) = (numbers[j], numbers[i])
-			if not ((addtl[3]) and (numbers[i] == numbers[j])):
-				print(((addtl[3]) and (numbers[i] == numbers[j])))
-				time.sleep(addtl[0] ** -1)
+			time.sleep(addtl[0] ** -1)
 			addtl[1] += 2
 		if addtl[2].is_set():
-			addtl[1] = 0
+			if addtl[3]:
+				addtl[1] = 0
 			break
 	(numbers[high], numbers[i + 1]) = (numbers[i + 1], numbers[high])
 	time.sleep(addtl[0] ** -1)
@@ -49,7 +59,8 @@ def quicksort_partition(numbers, low, high, addtl):
 
 def quicksort(numbers, addtl, low, high):
 	if addtl[2].is_set():
-		addtl[1] = 0
+		if addtl[3]:
+			addtl[1] = 0
 		return
 	if low < high: # if there's more than one item in the (sub)list
 		pivot = quicksort_partition(numbers, low, high, addtl) #quicksort_partition() returns the pivot
@@ -62,7 +73,8 @@ def bogosort(numbers, addtl):
 		time.sleep(addtl[0] ** -1)
 		addtl[1] += len(numbers)
 		if addtl[2].is_set():
-			addtl[1] = 0
+			if addtl[3]:
+				addtl[1] = 0
 			return
 
 def insertionsort(numbers, addtl):
@@ -73,18 +85,17 @@ def insertionsort(numbers, addtl):
 					time.sleep(addtl[0] ** -1)
 					addtl[1] += 2
 				if addtl[2].is_set():
-					addtl[1] = 0
+					if addtl[3]:
+						addtl[1] = 0
 					return
 
-# NOT an accurate visual representation. Counting sort does not and cannot work on the
-# original, unsorted list. Here it uses a copy instead of creating an empty one. This
-# is also why counting and radix sort do their thing even if the list is already sorted.
 def countingsort(numbers, addtl):
 	numbersDigitOnly = numbers.copy()
+	original = numbers.copy()
 	for i in range(len(numbers)):
 		numbersDigitOnly[i] = nth_digit(numbers[i], addtl[4])
+		numbers[i] = 0
 	index = Counter(numbersDigitOnly)
-	original = numbers.copy()
 	for i in range(1, max(numbersDigitOnly) + 1):
 		index[i] += index[i - 1]
 	for i in range(len(original) - 1, -1, -1):
@@ -93,10 +104,13 @@ def countingsort(numbers, addtl):
 		addtl[1] += 1
 		index[nth_digit(original[i], addtl[4])] -= 1
 		if addtl[2].is_set():
-			addtl[1] = 0
+			if addtl[3]:
+				addtl[1] = 0
 			return
 		
 def radixsort(numbers, addtl):
 	for j in range(len(str(max(numbers)))):
+		if addtl[2].is_set():
+			return
 		addtl[4] = j+1
 		addtl[5](numbers, addtl)

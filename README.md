@@ -17,6 +17,14 @@ Requires [Homebrew](https://brew.sh).
 
 `brew install gtk+3 pygobject3 adwaita-icon-theme`
 
+### Windows
+Requires [MSYS2](https://msys2.org). Install MSYS2, run MSYS2 MinGW 64-bit.
+
+```
+pacman -Suy
+pacman -S mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-gobject
+```
+
 ### FreeBSD
 `pkg install python gtk3 gobject-introspection`
 

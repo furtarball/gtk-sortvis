@@ -5,9 +5,10 @@ A sorting algorithm visualiser written in GTK. This program animates several sor
 
 ## Dependencies
 * Python 3
-* GTK3
+* GTK4
 * gobject-introspection
 * Adwaita icon theme
+* libadwaita
 
 ### Linux
 All of the above should be already built into most Linux distros. If not, PyGObject is often packaged as `python3-gobject`, `python3-gi`, `pygobject` or as a dependency for `gobject-introspection`.
@@ -15,21 +16,21 @@ All of the above should be already built into most Linux distros. If not, PyGObj
 ### macOS
 Requires [Homebrew](https://brew.sh).
 
-`brew install gtk+3 pygobject3 adwaita-icon-theme`
+`brew install gtk4 pygobject3 adwaita-icon-theme`
 
 ### Windows
 Requires [MSYS2](https://msys2.org). Install MSYS2, run MSYS2 MinGW 64-bit.
 
 ```
 pacman -Suy
-pacman -S mingw-w64-x86_64-gtk3 mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-gobject
+pacman -S mingw-w64-x86_64-gtk4 mingw-w64-x86_64-python3 mingw-w64-x86_64-python3-gobject mingw-w64-x86_64-libadwaita
 ```
 
 ### FreeBSD
-`pkg install python gtk3 gobject-introspection`
+`pkg install python gtk4 gobject-introspection libadwaita`
 
 ### OpenBSD
-`pkg_add python py-gobject3 gtk+3`
+`pkg_add python py-gobject3 gtk+4 libadwaita`
 
 ## Running
 `./main.py`
@@ -47,3 +48,7 @@ The *speed spinner* controls the delay between each change made to the list bein
 
 ### Counting sort and radix sort with counting sort as its subroutine
 The two are not comparison sorting algorithms, so they're intended to work on a new, empty list rather than the original. This means they attempt to work even if the list is already sorted. If you stop them midway through, the list will differ from the original content-wise.
+
+## New in 2.0
+
+Ported the app to GTK4 with the help of whatever little documentation there was.

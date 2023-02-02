@@ -16,7 +16,7 @@ All of the above should be already built into most Linux distros. If not, PyGObj
 ### macOS
 Requires [Homebrew](https://brew.sh).
 
-`brew install gtk4 pygobject3 adwaita-icon-theme`
+`brew install gtk4 pygobject3 adwaita-icon-theme libadwaita`
 
 ### Windows
 Requires [MSYS2](https://msys2.org). Install MSYS2, run MSYS2 MinGW 64-bit.
@@ -30,7 +30,7 @@ pacman -S mingw-w64-x86_64-gtk4 mingw-w64-x86_64-python3 mingw-w64-x86_64-python
 `pkg install python gtk4 gobject-introspection libadwaita`
 
 ### OpenBSD
-`pkg_add python py-gobject3 gtk+4 libadwaita`
+`pkg_add python py3-gobject3 gtk+4 libadwaita`
 
 ## Running
 `./main.py`
